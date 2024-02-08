@@ -1,6 +1,7 @@
 name: Build android common kernel
 
-on:[push]
+on:
+    push:
 
 jobs:
 
