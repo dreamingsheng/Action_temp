@@ -34,14 +34,13 @@ jobs:
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10-2024-01
+        ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
         ../git-repo/repo sync
         cd common
         git checkout --orphan android12-5.10-2022-04
         git rm -rf .
-        git pull https://github.com/zzh-zzh-zzh/android_gki_kernel_5.10_common.git android12-5.10-2024-01
+        git pull https://github.com/zzh-zzh-zzh/android_gki_kernel_5.10_common.git android12-5.10
     - name: Build Kernel
-
       run: |
         cd $GITHUB_WORKSPACE/android-kernel
         export BUILD_CONFIG=common/build.config.gki.aarch64 
