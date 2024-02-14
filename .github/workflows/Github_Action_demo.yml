@@ -34,12 +34,7 @@ jobs:
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
-        ../git-repo/repo sync
-        cd common
-        git checkout --orphan android12-5.10-2022-04
-        git rm -rf .
-        git pull https://github.com/dreamingsheng/android_gki_kernel_5.10_common.git android12-5.10-2022-04
+        gh repo clone dreamingsheng/android_gki_kernel_5.10_common
     - name: Build Kernel
       run: |
         cd $GITHUB_WORKSPACE/android-kernel
