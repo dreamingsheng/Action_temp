@@ -1,1 +1,9 @@
+name: learn-github-actions
 
+on: [push]
+
+jobs:
+  first-run-test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
