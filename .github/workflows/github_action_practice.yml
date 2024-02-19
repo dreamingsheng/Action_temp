@@ -1,10 +1,13 @@
 name: learn-github-actions
 
-on: [push]
+on: 
+  #手动触发
+  workflow_dispatch:
 
 jobs:
   first-run-test:
-    name: run test by ${{ github.actor }}
+    #指定运算环境，最新的Ubuntu下
     runs-on: ubuntu-latest
     steps:
+      #执行 bash 命令
       - run: echo "🐧 hello,this is my first step!"
