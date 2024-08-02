@@ -38,6 +38,7 @@ jobs:
         cd $GITHUB_WORKSPACE/android-kernel
         ls
         zip -r kernel-source.zip ./*
+        cd $GITHUB_WORKSPACE/android-kernel
         ls
 
     - name: Upload Kernel Source Package
