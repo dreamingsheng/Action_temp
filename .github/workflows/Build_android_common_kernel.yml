@@ -32,7 +32,7 @@ jobs:
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
         git clone https://github.com/zzh-zzh-zzh/AnyKernel3.git -b GKI
-        ls
+        ls -l
 
     - name: Package Kernel Source
       run: |
@@ -56,5 +56,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: android-kernel-source
-        path: $GITHUB_WORKSPACE/android-kernel/kernel-source.zip
+        path: ${{ github.workspace }}/android-kernel/kernel-source.zip
         if-no-files-found: warn
