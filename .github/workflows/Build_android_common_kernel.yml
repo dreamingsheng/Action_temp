@@ -30,7 +30,7 @@ jobs:
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        cd mkdir test.txt
+        mkdir test.txt
         
     - name: Package Kernel Source
       run: |
