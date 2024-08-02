@@ -36,7 +36,9 @@ jobs:
     - name: Package Kernel Source
       run: |
         cd $GITHUB_WORKSPACE/android-kernel
+        ls
         zip -r kernel-source.zip ./*
+        ls
 
     - name: Upload Kernel Source Package
       uses: actions/upload-artifact@v3
