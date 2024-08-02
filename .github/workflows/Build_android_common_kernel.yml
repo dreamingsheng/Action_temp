@@ -30,14 +30,9 @@ jobs:
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
-        ../git-repo/repo sync
-        cd common
-        git checkout --orphan android12-5.10-2022-04
         
     - name: Package Kernel Source
       run: |
-        # 假设内核源代码在 'kernel' 目录下
         cd $GITHUB_WORKSPACE/android-kernel
         zip -r kernel-source.zip ./*
 
