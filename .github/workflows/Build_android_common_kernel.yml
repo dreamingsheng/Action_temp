@@ -25,11 +25,6 @@ jobs:
           rm -rf "$GITHUB_WORKSPACE/git-repo"
         fi
 
-    - name: Clone git-repo
-      run: |
-        cd $GITHUB_WORKSPACE
-        git clone https://gerrit.googlesource.com/git-repo
-
     - name: Initialize and Sync Android Kernel Source
       run: |
         cd $GITHUB_WORKSPACE
