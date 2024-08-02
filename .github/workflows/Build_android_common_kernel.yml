@@ -55,9 +55,26 @@ jobs:
         fi
       shell: bash
 
-    - name: Upload Kernel Source Package
-      uses: actions/upload-artifact@v3
-      with:
-        name: android-kernel-source
-        path: ${{ github.workspace }}/android-kernel/kernel-source.zip
-        if-no-files-found: warn
+    - name: Split Zip File if Necessary
+      run: |
+        cd $GITHUB_WORKSPACE/android-kernel
+        FILESIZE=$(stat -c%s "kernel-source.zip")
+        MAXSIZE=$((2 * 1024 * 1024 * 1024))
+        if [ $FILESIZE -gt $MAXSIZE ]; then
+          split -b 2000m kernel-source.zip kernel-source.zip.part-
+        fi
+      shell: bash
+
+    - name: Upload Kernel Source Package or Parts
+      run: |
+        cd $GITHUB_WORKSPACE/android-kernel
+        if [ -f kernel-source.zip.part-aa ]; then
+          for PART in kernel-source.zip.part-*; do
+            echo "Uploading $PART..."
+            mv "$PART" "${PART}.zip"
+            gh run upload-artifact --name android-kernel-source-${PART} --path $PART.zip
+          done
+        else
+          gh run upload-artifact --name android-kernel-source --path kernel-source.zip
+        fi
+      shell: bash
