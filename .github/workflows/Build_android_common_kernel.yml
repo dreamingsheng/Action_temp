@@ -30,7 +30,7 @@ jobs:
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        mkdir test.txt
+        git pull https://github.com/dreamingsheng/android_gki_kernel_5.10_common.git dreamingsheng-patch-2
         
     - name: Package Kernel Source
       run: |
