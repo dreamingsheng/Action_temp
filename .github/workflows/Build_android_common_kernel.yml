@@ -31,6 +31,7 @@ jobs:
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
         git clone https://github.com/zzh-zzh-zzh/AnyKernel3.git -b GKI
+        ls
         
     - name: Package Kernel Source
       run: |
