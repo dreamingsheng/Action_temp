@@ -17,6 +17,13 @@ jobs:
       uses: easimon/maximize-build-space@master
       with:
         swap-size-mb: 4096
+        
+    - name: Remove Existing git-repo Directory
+      run: |
+        # 检查 git-repo 目录是否存在，如果存在则删除
+        if [ -d "$GITHUB_WORKSPACE/git-repo" ]; then
+          rm -rf "$GITHUB_WORKSPACE/git-repo"
+        fi
 
     - name: Clone git-repo
       run: |
