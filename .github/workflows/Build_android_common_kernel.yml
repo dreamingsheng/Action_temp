@@ -45,3 +45,4 @@ jobs:
       with:
         name: android-kernel-source
         path: $GITHUB_WORKSPACE/android-kernel/kernel-source.zip
+        if-no-files-found: warn
