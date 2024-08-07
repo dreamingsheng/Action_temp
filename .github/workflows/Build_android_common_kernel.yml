@@ -1,8 +1,8 @@
 name: Build android common kernel spidev module
 
-on:
-  push:
-    branches: [ "android12-5.10-2022-04" ]
+on: 
+  #手动触发
+  workflow_dispatch:
 
 jobs:
   build:
