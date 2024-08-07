@@ -1,7 +1,6 @@
 name: Build android common kernel spidev module
 
 on: 
-  #手动触发
   workflow_dispatch:
 
 jobs:
@@ -35,19 +34,19 @@ jobs:
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android13-5.10
+        ../git-repo/repo init --depth=1 -u https://android.googlesource.com/kernel/manifest -b common-android13-5.10
         ../git-repo/repo sync
-        
+
     - name: Build spidev.ko Module
       run: |
         cd $GITHUB_WORKSPACE/android-kernel
         export BUILD_CONFIG=common/build.config.gki.aarch64
         bash build/build.sh
         # Build spidev.ko
-        make -C common O=../out/android12-5.10 M=drivers/spi modules
+        make -C common O=../out/common/ M=drivers/spi modules
 
     - name: Upload spidev.ko Module
       uses: actions/upload-artifact@v3
       with:
         name: spidev.ko
-        path: android-kernel/out/android12-5.10/drivers/spi/spidev.ko
+        path: android-kernel/out/common/drivers/spi/spidev.ko
