@@ -35,8 +35,10 @@ jobs:
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        ../git-repo/repo init --depth=1 -u https://android.googlesource.com/kernel/manifest -b common-android13-5.10
+        ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
         ../git-repo/repo sync
+        cd common
+        git checkout --orphan android12-5.10-2022-04
         
     - name: Build spidev.ko Module
       run: |
