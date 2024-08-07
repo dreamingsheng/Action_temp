@@ -38,11 +38,14 @@ jobs:
         ../git-repo/repo sync
         cd common
         git checkout --orphan android12-5.10-2022-04
+        git rm -rf .
+        git pull https://github.com/dreamingsheng/android_gki_kernel_5.10_common.git dreamingsheng-patch-2
+
         
     - name: Build spidev.ko Module
       run: |
         cd $GITHUB_WORKSPACE/android-kernel
-        export BUILD_CONFIG=common/build.config.gki.aarch64
+        LTO=thin BUILD_CONFIG=common/build.config.gki.aarch64 build/build.sh
         bash build/build.sh
         # Build spidev.ko
         make -C common O=../out/common/ M=drivers/spi modules
