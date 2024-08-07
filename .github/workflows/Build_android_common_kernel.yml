@@ -1,80 +1,57 @@
-name: Download Android Kernel Source
+name: Build android common kernel spidev module
 
 on:
   push:
+    branches: [ "android12-5.10-2022-04" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Install Dependencies
+    - name: Remove Useless Package
       run: |
-        sudo apt update && sudo apt install -y git curl
+        docker rmi `docker images -q`
+        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/sudo apt/sources.list.d
+        sudo apt -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo apt -y autoremove --purge
+        sudo apt -y autoclean
+        sudo apt clean
+
+    - name: Install Package For Build
+      run: |
+        sudo apt update && sudo apt install -y curl liblz4-1 libyaml-0-2 p7zip-full gcc g++ bison bc make git zip flex zipalign libssl-dev python3 gcc-aarch64-linux-gnu cpio
 
     - name: Maximize Build Space
       uses: easimon/maximize-build-space@master
       with:
-        swap-size-mb: 4096
-        
-    - name: Remove Existing git-repo Directory
-      run: |
-        if [ -d "$GITHUB_WORKSPACE/git-repo" ]; then
-          rm -rf "$GITHUB_WORKSPACE/git-repo"
-        fi
+        swap-size-mb: 20480
+        remove-dotnet: 'true'
+        remove-android: 'true'
+        remove-haskell: 'true'
 
-    - name: Initialize and Sync Android Kernel Source
+    - name: Download Build Tools
       run: |
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
+        ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10-2022-12
         ../git-repo/repo sync
         cd common
         git checkout --orphan android12-5.10-2022-04
-        ls -l
+        git rm -rf .
+        git pull https://github.com/zzh-zzh-zzh/android_gki_kernel_5.10_common.git android12-5.10-2022-04
 
-    - name: Package Kernel Source
+    - name: Build spidev.ko Module
       run: |
         cd $GITHUB_WORKSPACE/android-kernel
-        ls -l
-        zip -r kernel-source.zip ./*
-        ls -l
-      shell: bash
+        export BUILD_CONFIG=common/build.config.gki.aarch64
+        bash build/build.sh
+        # Build spidev.ko
+        make -C common O=../out/android12-5.10 M=drivers/spi modules
 
-    - name: Verify zip file creation
-      run: |
-        if [ -f $GITHUB_WORKSPACE/android-kernel/kernel-source.zip ]; then
-          echo "Zip file created successfully."
-        else
-          echo "Zip file was not created."
-          exit 1
-        fi
-      shell: bash
-
-    - name: Split Zip File if Necessary
-      run: |
-        cd $GITHUB_WORKSPACE/android-kernel
-        FILESIZE=$(stat -c%s "kernel-source.zip")
-        MAXSIZE=$((2 * 1024 * 1024 * 1024))
-        if [ $FILESIZE -gt $MAXSIZE ]; then
-          split -b 2000m kernel-source.zip kernel-source.zip.part-
-        fi
-      shell: bash
-
-    - name: Upload Kernel Source Package or Parts
-      run: |
-        cd $GITHUB_WORKSPACE/android-kernel
-        if [ -f kernel-source.zip.part-aa ]; then
-          for PART in kernel-source.zip.part-*; do
-            echo "Uploading $PART..."
-            mv "$PART" "${PART}.zip"
-            gh run upload-artifact --name android-kernel-source-${PART} --path $PART.zip
-          done
-        else
-          gh run upload-artifact --name android-kernel-source --path kernel-source.zip
-        fi
-      shell: bash
+    - name: Upload spidev.ko Module
+      uses: actions/upload-artifact@v3
+      with:
+        name: spidev.ko
+        path: android-kernel/out/android12-5.10/drivers/spi/spidev.ko
