@@ -1,0 +1,58 @@
+name: Download Android Kernel Source
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        sudo apt update && sudo apt install -y git curl
+    - name: Maximize Build Space
+      uses: easimon/maximize-build-space@master
+      with:
+        swap-size-mb: 4096
+        
+    - name: Remove Existing git-repo Directory
+      run: |
+        if [ -d "$GITHUB_WORKSPACE/git-repo" ]; then
+          rm -rf "$GITHUB_WORKSPACE/git-repo"
+        fi
+    - name: Initialize and Sync Android Kernel Source
+      run: |
+        cd $GITHUB_WORKSPACE
+        git clone https://gerrit.googlesource.com/git-repo
+        mkdir android-kernel && cd android-kernel
+        ../git-repo/repo init --depth=1 -u https://android.googlesource.com/kernel/manifest -b common-android13-5.10
+        ../git-repo/repo sync
+        ls -l
+    - name: Package Kernel Source
+      run: |
+        cd $GITHUB_WORKSPACE/android-kernel
+        ls -l
+        zip -r kernel-source.zip ./*
+        ls -l
+      shell: bash
+
+    - name: Verify zip file creation
+      run: |
+        if [ -f $GITHUB_WORKSPACE/android-kernel/kernel-source.zip ]; then
+          echo "Zip file created successfully."
+        else
+          echo "Zip file was not created."
+          exit 1
+        fi
+      shell: bash
+
+    - name: Upload Kernel Source Package
+      uses: actions/upload-artifact@v3
+      with:
+        name: android-kernel-source
+        path: ${{ github.workspace }}/android-kernel/kernel-source.zip
+        if-no-files-found: warn
