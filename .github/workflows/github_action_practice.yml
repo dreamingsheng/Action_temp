@@ -274,6 +274,15 @@ jobs:
           fi
         fi
 
+         # Build spidev.ko
+        make -C common O=../out/common/ M=drivers/spi modules
+
+    - name: Upload spidev.ko Module
+      uses: actions/upload-artifact@v3
+      with:
+        name: spidev.ko
+        path: android-kernel/out/common/drivers/spi/spidev.ko
+
     - name: Checking the kernel compilation product
       run: |
        cd $GITHUB_WORKSPACE/kernel_workspace
