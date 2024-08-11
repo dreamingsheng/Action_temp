@@ -47,8 +47,6 @@ jobs:
         cd $GITHUB_WORKSPACE/android-kernel
         LTO=thin BUILD_CONFIG=common/build.config.gki.aarch64 build/build.sh
         bash build/build.sh
-        # Build spidev.ko
-        make -C common O=../out/common/ M=drivers/spi modules
 
     - name: Upload spidev.ko Module
       uses: actions/upload-artifact@v3
