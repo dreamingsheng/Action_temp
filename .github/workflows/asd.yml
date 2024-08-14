@@ -49,8 +49,9 @@ jobs:
       run: |
         ls -l /opt/clang
 
-    - name: Build the kernel
+    - name: Clean and Build the kernel
       run: |
         cd android_kernel_xiaomi_marble
-        make O=out ARCH=arm64 vendor/marble_defconfig
-        make -j$(nproc) O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CLANG_TRIPLE=aarch64-linux-gnu- CC=clang
+        make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out mrproper
+        make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out marble_defconfig
+        make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out -j$(nproc --all)
