@@ -1,5 +1,7 @@
-on: 
-  push:
+name: Build Xiaomi Marble Kernel
+
+on:
+  workflow_dispatch:  # Manual trigger for the workflow
 
 jobs:
   build:
@@ -32,11 +34,20 @@ jobs:
         git clone https://github.com/Pzqqt/android_kernel_xiaomi_marble.git
         cd android_kernel_xiaomi_marble
 
+    - name: Show Kernel Source File List
+      run: |
+        ls -l android_kernel_xiaomi_marble
+
     - name: Download and set up clang toolchain
       run: |
+        mkdir -p /opt/clang
         wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/428d18d9732aa7ebfcaed87a582d86155db878d4/clang-r416183b.tar.gz
         tar -xzf clang-r416183b.tar.gz -C /opt/clang
         export PATH="/opt/clang/bin:$PATH"
+
+    - name: Show Toolchain File List
+      run: |
+        ls -l /opt/clang
 
     - name: Build the kernel
       run: |
