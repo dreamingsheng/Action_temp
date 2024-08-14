@@ -1,7 +1,5 @@
-name: Build android common kernel spidev module
-
 on: 
-  workflow_dispatch:
+  push:
 
 jobs:
   build:
@@ -11,7 +9,7 @@ jobs:
     - name: Remove Useless Package
       run: |
         docker rmi `docker images -q`
-        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/sudo apt/sources.list.d
+        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
         sudo apt -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php*
         sudo apt -y autoremove --purge
         sudo apt -y autoclean
@@ -29,29 +27,19 @@ jobs:
         remove-android: 'true'
         remove-haskell: 'true'
 
-    - name: Download Build Tools
+    - name: Checkout kernel source
       run: |
-        cd $GITHUB_WORKSPACE
-        git clone https://gerrit.googlesource.com/git-repo
-        mkdir android-kernel && cd android-kernel
-        ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
-        ../git-repo/repo sync
-        cd common
-        git checkout --orphan android12-5.10-2022-04
-        git rm -rf .
-        git pull https://github.com/dreamingsheng/android_gki_kernel_5.10_common.git dreamingsheng-patch-2
+        git clone https://github.com/Pzqqt/android_kernel_xiaomi_marble.git
+        cd android_kernel_xiaomi_marble
 
-        
-    - name: Build spidev.ko Module
+    - name: Download and set up clang toolchain
       run: |
-        cd $GITHUB_WORKSPACE/android-kernel
-        LTO=thin BUILD_CONFIG=common/build.config.gki.aarch64 build/build.sh
-        bash build/build.sh
-        # Build spidev.ko
-        make -C common O=../out/common/ M=drivers/spi modules
+        wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/428d18d9732aa7ebfcaed87a582d86155db878d4/clang-r416183b.tar.gz
+        tar -xzf clang-r416183b.tar.gz -C /opt/clang
+        export PATH="/opt/clang/bin:$PATH"
 
-    - name: Upload spidev.ko Module
-      uses: actions/upload-artifact@v3
-      with:
-        name: spidev.ko
-        path: android-kernel/out/common/drivers/spi/spidev.ko
+    - name: Build the kernel
+      run: |
+        cd android_kernel_xiaomi_marble
+        make O=out ARCH=arm64 vendor/marble_defconfig
+        make -j$(nproc) O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CLANG_TRIPLE=aarch64-linux-gnu- CC=clang
