@@ -31,6 +31,9 @@ jobs:
       run: |
         git clone https://github.com/dreamingsheng/kernel_xiaomi_sm7250.git
         cd kernel_xiaomi_sm7250
+        git clone https://github.com/tiann/KernelSU.git
+        ls -l kernel_xiaomi_sm7250
+        
     - name: Show Kernel Source File List
       run: |
         ls -l kernel_xiaomi_sm7250
@@ -48,7 +51,6 @@ jobs:
     - name: Clean and Build the kernel
       run: |
         cd kernel_xiaomi_sm7250
-        
         # Export necessary environment variables for the Android Clang toolchain
         export PATH="/opt/clang/bin:$PATH"
         
