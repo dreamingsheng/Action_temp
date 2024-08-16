@@ -1,0 +1,77 @@
+name: Build Xiaomi Kernel k30 picasso_user_defconfig
+
+on:
+  push:  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Remove Useless Package
+      run: |
+        docker rmi `docker images -q`
+        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
+        sudo apt -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo apt -y autoremove --purge
+        sudo apt -y autoclean
+        sudo apt clean
+    - name: Install Packages for Build
+      run: |
+        sudo apt update && sudo apt install -y curl liblz4-1 libyaml-0-2 p7zip-full gcc g++ bison bc make git zip flex zipalign libssl-dev python3 gcc-aarch64-linux-gnu cpio
+    - name: Maximize Build Space
+      uses: easimon/maximize-build-space@master
+      with:
+        swap-size-mb: 30720
+        remove-dotnet: 'true'
+        remove-android: 'true'
+        remove-haskell: 'true'
+
+    - name: Checkout kernel source
+      run: |
+        git clone https://github.com/stormbreaker-project/kernel_xiaomi_picasso.git
+        cd kernel_xiaomi_picasso
+        ls -l kernel_xiaomi_picasso
+      
+        
+        
+    - name: Show Kernel Source File List
+      run: |
+        cd kernel_xiaomi_picasso
+
+    - name: Download and set up clang toolchain
+      run: |
+        mkdir -p /opt/clang
+        wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/428d18d9732aa7ebfcaed87a582d86155db878d4/clang-r416183b.tar.gz
+        tar -xzf clang-r416183b.tar.gz -C /opt/clang
+        export PATH="/opt/clang/bin:$PATH"
+        export LD_LIBRARY_PATH="/opt/clang/lib:$LD_LIBRARY_PATH"
+        clang --version  # Verify clang is set up correctly
+    - name: Show Toolchain File List
+      run: |
+        ls -l /opt/clang
+    - name: Clean and Build the kernel
+      run: |
+        cd kernel_xiaomi_picasso
+        # Export necessary environment variables for the Android Clang toolchain
+        export PATH="/opt/clang/bin:$PATH"
+        
+        # CROSS_COMPILE points to the prefix of the GNU binutils tools
+        export CROSS_COMPILE=aarch64-linux-gnu-
+        
+        # Define the compiler as Clang and the linker as LLD
+        export CC=clang
+        export LD=ld.lld
+        export AR=llvm-ar
+        export NM=llvm-nm
+        export OBJCOPY=llvm-objcopy
+        export OBJDUMP=llvm-objdump
+        export STRIP=llvm-strip
+        export HOSTCC=gcc
+        export HOSTCXX=g++
+        
+        # Clean the build environment and configure the kernel
+        make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out mrproper
+        make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out picasso_user_defconfig
+        # Start the kernel build with logging
+        make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out -j$(nproc --all) 2>&1 | tee build.log
