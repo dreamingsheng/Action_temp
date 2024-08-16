@@ -66,4 +66,4 @@ jobs:
         export HOSTCXX=g++
         
         #
-        bash ./build.sh
+        bash ./build.sh cleanbuild
