@@ -1,7 +1,7 @@
 name: Build Xiaomi Kernel k30 picasso_user_defconfig
 
 on:
-  workflow_dispatch:  # Manual trigger for the workflow
+  push:  
 
 jobs:
   build:
@@ -48,8 +48,6 @@ jobs:
     - name: Clean and Build the kernel
       run: |
         cd kernel_xiaomi_sm7250
-        
-        curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
         
         # Export necessary environment variables for the Android Clang toolchain
         export PATH="/opt/clang/bin:$PATH"
