@@ -1,4 +1,4 @@
-name: Build Xiaomi Marble Kernel k30
+name: Build Xiaomi Kernel k30 picasso_user_defconfig
 
 on:
   workflow_dispatch:  # Manual trigger for the workflow
@@ -67,6 +67,6 @@ jobs:
         
         # Clean the build environment and configure the kernel
         make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out mrproper
-        make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out marble_defconfig
+        make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out picasso_user_defconfig
         # Start the kernel build with logging
         make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out -j$(nproc --all) 2>&1 | tee build.log
