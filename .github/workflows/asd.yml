@@ -65,8 +65,5 @@ jobs:
         export HOSTCC=gcc
         export HOSTCXX=g++
         
-        # Clean the build environment and configure the kernel
-        make ARCH=arm64 LLVM=1 LLVM_IAS=1 mrproper
-        make ARCH=arm64 LLVM=1 LLVM_IAS=1 stock_defconfig
-        # Start the kernel build with logging
-        make ARCH=arm64 LLVM=1 LLVM_IAS=1 -j$(nproc --all) 2>&1 | tee build.log
+        #
+        bash ./build.sh
