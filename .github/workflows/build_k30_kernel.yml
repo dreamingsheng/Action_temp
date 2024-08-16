@@ -37,7 +37,7 @@ jobs:
         
     - name: Show Kernel Source File List
       run: |
-        cd kernel_xiaomi_sm7250
+
         ls -l kernel_xiaomi_sm7250
     - name: Download and set up clang toolchain
       run: |
