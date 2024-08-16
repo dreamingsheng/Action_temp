@@ -1,4 +1,4 @@
-name: Build Xiaomi Kernel k30 picasso_user_defconfig
+name: Build Xiaomi Kernel k30 user_defconfig
 
 on:
   push:  
@@ -31,7 +31,7 @@ jobs:
       run: |
         git clone https://github.com/dreamingsheng/kernel_xiaomi_sm7250.git
         cd kernel_xiaomi_sm7250
-        ls -l kernel_xiaomi_sm7250
+       
         git clone https://github.com/tiann/KernelSU.git
         
         
