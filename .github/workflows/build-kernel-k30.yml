@@ -1,4 +1,4 @@
-name: Build Xiaomi Kernel k30 picasso_user_defconfig
+name: Build Xiaomi Kernel k30 picasso_user
 
 on:
   push:  
@@ -30,14 +30,9 @@ jobs:
     - name: Checkout kernel source
       run: |
         git clone https://github.com/stormbreaker-project/kernel_xiaomi_picasso.git
-        cd kernel_xiaomi_picasso
-        ls -l kernel_xiaomi_picasso
-      
+        cd kernel_xiaomi_picasso  
         
-        
-    - name: Show Kernel Source File List
-      run: |
-        cd kernel_xiaomi_picasso
+
 
     - name: Download and set up clang toolchain
       run: |
