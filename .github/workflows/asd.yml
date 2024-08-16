@@ -29,7 +29,7 @@ jobs:
 
     - name: Checkout kernel source
       run: |
-        git clone https://github.com/EndCredits/kernel_xiaomi_sm7250.git
+        git clone https://github.com/dreamingsheng/kernel_xiaomi_sm7250.git
         cd kernel_xiaomi_sm7250
     - name: Show Kernel Source File List
       run: |
@@ -69,4 +69,4 @@ jobs:
         export HOSTCXX=g++
         
         #
-        bash ./build.sh cleanbuild
+        bash ./build.sh kernelonly
