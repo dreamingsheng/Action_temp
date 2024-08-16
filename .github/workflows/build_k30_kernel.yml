@@ -31,11 +31,13 @@ jobs:
       run: |
         git clone https://github.com/dreamingsheng/kernel_xiaomi_sm7250.git
         cd kernel_xiaomi_sm7250
-        git clone https://github.com/tiann/KernelSU.git
         ls -l kernel_xiaomi_sm7250
+        git clone https://github.com/tiann/KernelSU.git
+        
         
     - name: Show Kernel Source File List
       run: |
+        cd kernel_xiaomi_sm7250
         ls -l kernel_xiaomi_sm7250
     - name: Download and set up clang toolchain
       run: |
