@@ -1,4 +1,4 @@
-name: Build Xiaomi Marble Kernel1
+name: Build Xiaomi Marble Kernel k30
 
 on:
   workflow_dispatch:  # Manual trigger for the workflow
@@ -16,11 +16,9 @@ jobs:
         sudo apt -y autoremove --purge
         sudo apt -y autoclean
         sudo apt clean
-
     - name: Install Packages for Build
       run: |
         sudo apt update && sudo apt install -y curl liblz4-1 libyaml-0-2 p7zip-full gcc g++ bison bc make git zip flex zipalign libssl-dev python3 gcc-aarch64-linux-gnu cpio
-
     - name: Maximize Build Space
       uses: easimon/maximize-build-space@master
       with:
@@ -31,13 +29,11 @@ jobs:
 
     - name: Checkout kernel source
       run: |
-        git clone https://github.com/Pzqqt/android_kernel_xiaomi_marble.git
-        cd android_kernel_xiaomi_marble
-
+        git clone https://github.com/EndCredits/kernel_xiaomi_sm7250.git
+        cd kernel_xiaomi_sm7250
     - name: Show Kernel Source File List
       run: |
-        ls -l android_kernel_xiaomi_marble
-
+        ls -l kernel_xiaomi_sm7250
     - name: Download and set up clang toolchain
       run: |
         mkdir -p /opt/clang
@@ -46,14 +42,12 @@ jobs:
         export PATH="/opt/clang/bin:$PATH"
         export LD_LIBRARY_PATH="/opt/clang/lib:$LD_LIBRARY_PATH"
         clang --version  # Verify clang is set up correctly
-
     - name: Show Toolchain File List
       run: |
         ls -l /opt/clang
-
     - name: Clean and Build the kernel
       run: |
-        cd android_kernel_xiaomi_marble
+        cd kernel_xiaomi_sm7250
         # Export necessary environment variables for the Android Clang toolchain
         export PATH="/opt/clang/bin:$PATH"
         
@@ -74,6 +68,5 @@ jobs:
         # Clean the build environment and configure the kernel
         make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out mrproper
         make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out marble_defconfig
-
         # Start the kernel build with logging
         make ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out -j$(nproc --all) 2>&1 | tee build.log
