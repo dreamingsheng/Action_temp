@@ -31,11 +31,8 @@ jobs:
       run: |
         git clone https://github.com/dreamingsheng/kernel_xiaomi_sm7250.git
         cd kernel_xiaomi_sm7250
-       
-        git clone https://github.com/tiann/KernelSU.git
-        git checkout v0.9.4
-
-        
+         
+        curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.4
         
     - name: Show Kernel Source File List
       run: |
