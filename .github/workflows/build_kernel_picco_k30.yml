@@ -1,7 +1,7 @@
 name: Build Xiaomi Kernel k30 user_defconfig
 
 on:
-  push:  
+  workflow_dispatch:
 
 jobs:
   build:
@@ -30,6 +30,7 @@ jobs:
     - name: Checkout kernel source
       run: |
         git clone https://github.com/dreamingsheng/kernel_xiaomi_sm7250.git
+        cd kernel_xiaomi_sm7250
         git submodule init && git submodule update
         
     - name: Show Kernel Source File List
