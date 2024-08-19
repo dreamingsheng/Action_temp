@@ -1,4 +1,4 @@
-name: Build android common kernel
+name: Build android common kernel android12-5-10
 
 on:
     push:
