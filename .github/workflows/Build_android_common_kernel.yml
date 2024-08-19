@@ -40,11 +40,18 @@ jobs:
         git checkout --orphan android12-5.10-2022-04
         git rm -rf .
         git pull https://github.com/dreamingsheng/android_gki_kernel_5.10_common.git dreamingsheng-patch-2
+
+    # 无条件设置ccache
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: fixed-key-for-all-builds  # 使用固定的缓存键
+        max-size: 2G
+        
     - name: Build Kernel
       run: |
         cd $GITHUB_WORKSPACE/android-kernel
-        export BUILD_CONFIG=common/build.config.gki.aarch64 
-        bash build/build.sh
+        LTO=thin BUILD_CONFIG=common/build.config.gki.aarch64 build/build.sh
     - name: Build Kernel Package
 
       run: |
