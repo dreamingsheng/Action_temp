@@ -29,20 +29,20 @@ jobs:
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        ../git-repo/repo init --depth=1 -u https://android.googlesource.com/kernel/manifest -b common-android13-5.10
+        ../git-repo/repo init --depth=1 -u https://android.googlesource.com/kernel/manifest -b common-android12-5.10 --depth 1
         ../git-repo/repo sync
         ls -l
     - name: Package Kernel Source
       run: |
         cd $GITHUB_WORKSPACE/android-kernel
         ls -l
-        zip -r kernel-source.zip ./*
+        zip -r kernel-source-common-android12-5.10.zip ./*
         ls -l
       shell: bash
 
     - name: Verify zip file creation
       run: |
-        if [ -f $GITHUB_WORKSPACE/android-kernel/kernel-source.zip ]; then
+        if [ -f $GITHUB_WORKSPACE/android-kernel/kernel-source-common-android12-5.10.zip ]; then
           echo "Zip file created successfully."
         else
           echo "Zip file was not created."
@@ -54,5 +54,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: android-kernel-source
-        path: ${{ github.workspace }}/android-kernel/kernel-source.zip
+        path: ${{ github.workspace }}/android-kernel/kernel-source-common-android12-5.10.zip
         if-no-files-found: warn
