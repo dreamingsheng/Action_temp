@@ -34,8 +34,9 @@ jobs:
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
+        ../git-repo/repo init --depth=1 -u https://android.googlesource.com/kernel/manifest -b common-android12-5.10 --depth 1
         ../git-repo/repo sync
+        ls -l
     - name: Build Kernel
       run: |
         cd $GITHUB_WORKSPACE/android-kernel
