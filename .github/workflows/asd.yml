@@ -18,7 +18,6 @@ jobs:
         mkdir android-kernel && cd android-kernel
         ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
         ../git-repo/repo sync
-        cat .repo/repo.prop
         cd ../git-repo/
         ls
 
