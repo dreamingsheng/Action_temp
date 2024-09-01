@@ -23,7 +23,7 @@ jobs:
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
         mkdir android-kernel && cd android-kernel
-        $GITHUB_WORKSPACE/git-repo/repo init --depth=1 --no-repo-verify --url https://android.googlesource.com/kernel/manifest -b common-android12-5.10
+        ../git-repo/repo init --depth=1 --no-repo-verify --url https://android.googlesource.com/kernel/manifest -b common-android12-5.10
 
     - name: Sync Repo (minimal)
       run: |
