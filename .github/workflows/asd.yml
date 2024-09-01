@@ -1,4 +1,4 @@
-name: Build android common kernel android12-5-10
+name: get repo.prop mainfest.xml
 
 on:
     push:
@@ -11,25 +11,18 @@ jobs:
 
     steps:
     - name: Install Package For Build
-
       run: |
         sudo apt update && sudo apt install -y curl liblz4-1 libyaml-0-2 p7zip-full gcc g++ bison bc make git zip flex zipalign libssl-dev python3 gcc-aarch64-linux-gnu cpio
+
     - name: Maximize Build Space
-
       uses: easimon/maximize-build-space@master
-
       with:
-
         swap-size-mb: 20480
-
         remove-dotnet: 'true'
-
         remove-android: 'true'
-
         remove-haskell: 'true'
 
     - name: Download Build Tools
-
       run: |
         cd $GITHUB_WORKSPACE
         git clone https://gerrit.googlesource.com/git-repo
@@ -37,8 +30,15 @@ jobs:
         ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
         ../git-repo/repo sync
 
-    - name: Upload repo.prop
+    - name: Download repo.prop and manifest.xml
+      run: |
+        cp $GITHUB_WORKSPACE/android-kernel/.repo/repo.prop $GITHUB_WORKSPACE/
+        cp $GITHUB_WORKSPACE/android-kernel/.repo/manifests/manifest.xml $GITHUB_WORKSPACE/
+
+    - name: Upload repo.prop and manifest.xml
       uses: actions/upload-artifact@v3
       with:
-        name: repo-prop
-        path: ${{ github.workspace }}/android-kernel/.repo/repo.prop
+        name: repo-files
+        path: |
+          ${{ github.workspace }}/repo.prop
+          ${{ github.workspace }}/manifest.xml
