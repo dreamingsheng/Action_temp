@@ -10,17 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install Package For Build
-      run: |
-        sudo apt update && sudo apt install -y curl liblz4-1 libyaml-0-2 p7zip-full gcc g++ bison bc make git zip flex zipalign libssl-dev python3 gcc-aarch64-linux-gnu cpio
-
-    - name: Maximize Build Space
-      uses: easimon/maximize-build-space@master
-      with:
-        swap-size-mb: 20480
-        remove-dotnet: 'true'
-        remove-android: 'true'
-        remove-haskell: 'true'
 
     - name: Download Build Tools
       run: |
@@ -29,11 +18,26 @@ jobs:
         mkdir android-kernel && cd android-kernel
         ../git-repo/repo init --depth=1 --u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
         ../git-repo/repo sync
+        cat .repo/repo.prop
+        cd ../git-repo/
+        ls
+
+    - name: Debug - List Files
+      run: |
+        find $GITHUB_WORKSPACE/android-kernel -type f
 
     - name: Download repo.prop and manifest.xml
       run: |
-        cp $GITHUB_WORKSPACE/android-kernel/.repo/repo.prop $GITHUB_WORKSPACE/
-        cp $GITHUB_WORKSPACE/android-kernel/.repo/manifests/manifest.xml $GITHUB_WORKSPACE/
+        if [ -f $GITHUB_WORKSPACE/android-kernel/.repo/repo.prop ]; then
+          cp $GITHUB_WORKSPACE/android-kernel/.repo/repo.prop $GITHUB_WORKSPACE/
+        else
+          echo "repo.prop not found"
+        fi
+        if [ -f $GITHUB_WORKSPACE/android-kernel/.repo/manifests/manifest.xml ]; then
+          cp $GITHUB_WORKSPACE/android-kernel/.repo/manifests/manifest.xml $GITHUB_WORKSPACE/
+        else
+          echo "manifest.xml not found"
+        fi
 
     - name: Upload repo.prop and manifest.xml
       uses: actions/upload-artifact@v3
