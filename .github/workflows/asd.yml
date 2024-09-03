@@ -44,4 +44,4 @@ jobs:
         name: repo-files
         path: |
           ${{ github.workspace }}/repo.prop
-          ${{ github.workspace }}/manifest.xml
+          ${{ github.workspace }}/android-kernel/.repo/manifest.xml
