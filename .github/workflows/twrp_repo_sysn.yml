@@ -1,0 +1,34 @@
+name: Repo Sync and Upload
+
+on: [push]
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Initialize repo
+      run: |
+        mkdir workspace
+        cd workspace
+        echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
+        git config --global user.name "Nico170420"
+        git config --global user.email "b170420nc@gmail.com"
+        repo init --depth=1 -u ${{ github.event.inputs.MANIFEST_URL }} -b ${{ github.event.inputs.MANIFEST_BRANCH }}
+      id: init-repo
+
+    - name: Repo Sync
+      run: |
+        repo sync -j$(nproc --all) --force-sync
+      working-directory: ${{ steps.init-repo.outputs.workspace-folder }}
+
+    - name: Create Tarball
+      run: |
+        tar -czvf repo-sync.tar.gz -C ${{ steps.init-repo.outputs.workspace-folder }} .
+      working-directory: ${{ steps.init-repo.outputs.workspace-folder }}
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: repo-sync-artifact
+        path: ${{ steps.init-repo.outputs.workspace-folder }}/repo-sync.tar.gz
