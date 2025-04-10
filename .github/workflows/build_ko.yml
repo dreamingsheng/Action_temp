@@ -48,7 +48,6 @@ jobs:
       run: |
         cd android-cuttlefish
         mkdir -p package
-        cp -r . package/  # 复制整个源码文件夹
         cp *.deb package/  # 复制生成的 .deb 包
         tar -czvf cuttlefish_package.tar.gz -C package .
 
